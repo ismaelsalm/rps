@@ -51,9 +51,15 @@ function playRound(humanChoice = getHumanChoice(), computerChoice = getComputerC
     return `They won, ${computerChoice} beats ${humanChoice}.`
 }
 
-let prefixText = ''
-for (let index = 0; index < 5; index++) {
-    prefixText = playRound(getHumanChoice(prefixText))
+function playGame(){
+    
+
+    let prefixText = ''
+    for (let index = 0; index < 5; index++) {
+        prefixText = playRound(getHumanChoice(prefixText))
+    }
+    console.log(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
+    alert(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
 }
-console.log(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
-alert(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
+
+playGame();
