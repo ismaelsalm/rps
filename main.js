@@ -55,8 +55,8 @@ function playGame(){
     
 
     let prefixText = ''
-    for (let index = 0; index < 5; index++) {
-        prefixText = playRound(getHumanChoice(prefixText))
+    for (let index = 1; index <= 5; index++) {
+        prefixText = playRound(getHumanChoice(`Round: ${index}. ` + prefixText))
     }
     console.log(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
     alert(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
