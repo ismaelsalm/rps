@@ -1,65 +1,100 @@
-class Option {
-    static Rock = "Rock";
-    static Paper = "Paper";
-    static Scissors = "Scissors";
-}
-
+let roundNumber = 0;
 let humanScore = 0;
 let computerScore = 0;
+let matchText = ''
+
+class Option {
+    static Rock = "rock";
+    static Paper = "paper";
+    static Scissors = "scissors";
+
+    static fromString(option) {
+        switch (option) {
+            case 'rock':
+                return Option.Rock;
+            case 'paper':
+                return Option.Paper;
+            case 'scissors': 
+                return Option.Scissors;
+            default:
+                return undefined;
+        }
+    }
+}
 
 function getComputerChoice() {
     const randomFactor = Math.random() * 100;
     return randomFactor > 66 ? Option.Rock : randomFactor > 33 ? Option.Paper : Option.Scissors;
 }
 
-function getHumanChoice(prefixText) {
-    const option = prompt(prefixText + " Choose Rock, Paper or Scissors.", Option.Rock).toLowerCase()
-    if(option == "r") return Option.Rock;
-    if(option == "p") return Option.Paper;
-    if(option == "s") return Option.Scissors;
-
-    if(option == "rock") return Option.Rock;
-    if(option == "paper") return Option.Paper;
-    if(option == "scissors") return Option.Scissors;
-
-    if(option == "1") return Option.Rock;
-    if(option == "2") return Option.Paper;
-    if(option == "3") return Option.Scissors;
+function accessResult(player1Choice, player2Choice) {
+    if (player1Choice === player2Choice) return 0;
+    if ((player1Choice == Option.Rock && player2Choice == Option.Scissors) 
+        || (player1Choice == Option.Paper && player2Choice == Option.Rock) 
+        || (player1Choice == Option.Scissors && player2Choice == Option.Paper)) return 1;
+    return 2;
 }
 
-function playRound(humanChoice = getHumanChoice(), computerChoice = getComputerChoice()) {
-    class winner {
-        static Tie = 0;
-        static Human = 1;
-        static Computer = 2;
-    }
-    let result = winner.Tie;
-    if ((humanChoice == Option.Rock && computerChoice == Option.Scissors)) result = winner.Human;
-    else if ((humanChoice == Option.Paper && computerChoice == Option.Rock)) result = winner.Human;
-    else if ((humanChoice == Option.Scissors && computerChoice == Option.Paper)) result = winner.Human;
-    else if ((computerChoice == Option.Rock && humanChoice == Option.Scissors)) result = winner.Computer;
-    else if ((computerChoice == Option.Paper && humanChoice == Option.Rock)) result = winner.Computer;
-    else if ((computerChoice == Option.Scissors && humanChoice == Option.Paper)) result = winner.Computer;
+function playRound(humanChoice, computerChoice = getComputerChoice()) {
+    
+    roundNumber++;
+    const result = accessResult(humanChoice, computerChoice)
 
-    if(result == winner.Tie) return "It was a tie."
-    if (result == winner.Human) {
+    if(!result) matchText = `It was a tie. (${humanChoice})`
+    else if (result === 1) {
         humanScore++;
-        return `You won, ${humanChoice} beats ${computerChoice}.`
+        matchText = `You won, ${humanChoice} beats ${computerChoice}.`
     }
-    
-    computerScore++;
-    return `They won, ${computerChoice} beats ${humanChoice}.`
+    else {
+        computerScore++;
+        matchText =  `They won, ${computerChoice} beats ${humanChoice}.`
+    }
 }
 
-function playGame(){
-    
-
-    let prefixText = ''
-    for (let index = 1; index <= 5; index++) {
-        prefixText = playRound(getHumanChoice(`Round: ${index}. ` + prefixText))
-    }
-    console.log(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
-    alert(`Humans: ${humanScore} Computers: ${computerScore}. The winner is: ${computerScore > humanScore ? "COMPUTERS!!!" : "humans."}`)
+function clearMatch() {
+    humanScore = 0;
+    computerScore = 0;
+    roundNumber = 0;
+    matchText = '';
+    updateUI();
+    updateHistory()
 }
 
-playGame();
+function completeGame() {
+    if(!(humanScore >= 5 || computerScore >= 5)) return;
+    if (confirm(`The winner is: ${humanScore > computerScore ? "humans..." : "COMPUTERS!!!"}. \n do you wan't to play again?`)) {
+        clearMatch()
+    }
+}
+
+const matchNumberDisplay = document.getElementById('match-number')
+const humanScoreDisplay = document.getElementById('score-human')
+const computerScoreDisplay = document.getElementById('score-computer')
+const matchResultTextDisplay = document.getElementById('match-result')
+const historyListContainer = document.getElementById('history-list')
+
+function updateUI() {
+    matchNumberDisplay.innerText = roundNumber;
+    matchResultTextDisplay.innerText = matchText;
+    computerScoreDisplay.innerText = computerScore;
+    humanScoreDisplay.innerText = humanScore;
+}
+
+function updateHistory() {
+    if(!roundNumber) {historyListContainer.replaceChildren([]); return;}
+    const listItem = document.createElement('li')
+    listItem.innerText = matchText
+    historyListContainer.appendChild(listItem)
+}
+
+const btnContainer = document.getElementById('play')
+btnContainer.addEventListener('click', (ev) => {
+    const option = Option.fromString(ev.target.id)
+    if (!option) return;
+    updateHistory()
+    playRound()
+    updateUI();
+    completeGame()
+})
+
+updateUI()

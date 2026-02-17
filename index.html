@@ -4,8 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=100vw, initial-scale=1.0">
     <title>Rock, paper and scissors</title>
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <script src="main.js"></script>
+    <div class="match-container">
+        <h1 class="match-title">#<span id="match-number"></span></h1>
+        <h2 id="match-result">result</h2>
+        <div id="score">
+            <label>humans</label>
+            <span id="score-human">0</span>
+            <span>/</span>
+            <label>computer</label>
+            <span id="score-computer">0</span>
+        </div>
+    </div>
+    <div class="content">
+        <div id="play" class="button-container">
+            <button id="rock"><span>Rock</span></button>
+            <button id="paper"><span>Paper</span></button>
+            <button id="scissors"><span>Scissors</span></button>
+        </div>
+    </div>
+    <div class="history-container">
+        <ol id="history-list">
+
+        </ol>
+    </div>
 </body>
 </html>
